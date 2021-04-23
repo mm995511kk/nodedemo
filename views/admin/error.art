@@ -1,0 +1,14 @@
+{{extend './common/layout.art'}}
+
+{{block 'main'}}
+<p class="bg-danger error">{{msg}},3秒之后自动跳转掉登陆界面</p>
+{{/block}}
+
+{{block 'script'}}
+<!-- 设定定时器，3秒之后跳转到登陆页面 -->
+<script>
+    setTimeout(function () {
+        location.href = '/admin/login'
+    }, 3000)
+</script>
+{{/block}}

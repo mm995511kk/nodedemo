@@ -1,0 +1,98 @@
+{{extend './common/layout.art'}}
+{{block 'main'}}
+{{include './common/head.art'}}
+<!-- 主体内容 -->
+<div class="content">
+    {{include './common/aside.art'}}
+    <div class="main">
+        <!-- 分类标题 -->
+        <div class="title">
+            <h4>5b9a716cb2d2bf17706bcc0a</h4>
+        </div>
+        <!-- 
+            enctype指定表单提交数据的编码类型，
+                1.application/x-www-form-urlencoded 
+                    1.例子:name=zhangsan&age=18
+                    2.此项为表单提交默认值
+                2.multipart/form-data
+                    1.将表单数据编码为二进制类型
+                    2.在使用包含文件上传控件的表单时，必须使用该值。
+        -->
+        <!-- /分类标题 -->
+        <form class="form-container" action="/admin/article-add" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>标题</label>
+                <input name="title" type="text" class="form-control" placeholder="请输入文章标题">
+            </div>
+            <div class="form-group">
+                <label>作者</label>
+                <input name="author" type="text" class="form-control" readonly value="{{@userInfo._id}}">
+            </div>
+            <div class="form-group">
+                <label>发布时间</label>
+                <input name="publishDate" type="date" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="exampleInputFile">文章封面</label>
+                <!-- 
+                    multiple允许用户一次性选择多个文件上传
+                 -->
+                <input type="file" name="cover" id='file'>
+                <div class="thumbnail-waper">
+                    <img class="img-thumbnail" src="" id="preview">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>内容</label>
+                <textarea name="content" class="form-control" id="editor"></textarea>
+            </div>
+            <div class="buttons">
+                <input type="submit" class="btn btn-primary">
+            </div>
+        </form>
+
+    </div>
+</div>
+<!-- /主体内容 -->
+{{/block}}
+{{block 'script'}}
+<script src="lib/ckeditor5/ckeditor.js"></script>
+<script type="text/javascript">
+
+    let editor;
+
+    ClassicEditor
+        .create(document.querySelector('#editor'))
+        .then(newEditor => {
+            editor = newEditor;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+
+    // 获取数据
+    // const editorData = editor.getData();
+
+    // 将用户选择的文件显示在页面中
+    var file = document.querySelector('#file')
+    var preview = document.querySelector('#preview')
+    // 当用户选择完文件后
+    file.onchange = function () {
+        // 1.创建文件读取对象
+        var reader = new FileReader();
+        // 用户选择的文件列表,files[0]就代表当前选择的文件           
+        // console.log(this.files[0]);
+        // 2.读取文件
+        // readAsDataURL是一个异步方法，只能通过onload方法监听文件读取结果,返回result
+        //  result 属性将包含一个data:URL格式的字符串（base64编码）以表示所读取文件的内容。
+        reader.readAsDataURL(this.files[0]);
+        reader.onload = function () {
+            // console.log(reader.result);
+            // 将文件读取结果显示在页面中，当src的值为URL格式的字符串（base64编码）以表示所读取文件的内容，是可以正常显示
+            preview.src = reader.result;
+        }
+
+    }
+</script>
+{{/block}}
